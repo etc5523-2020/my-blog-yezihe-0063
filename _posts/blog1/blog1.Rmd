@@ -1,12 +1,10 @@
 ---
-title: "Blog 1"
+title: "Blog 1: COVID-19 in Panama"
 description: |
-  This is my first Blog.
+  COVID-19 in Panama.
 author:
   - name: Yezi He
-    url: https://example.com/norajones
-    affiliation: Spacely Sprockets
-    affiliation_url: https://example.com/spacelysprokets
+    affiliation: Monash University
 date: 09-02-2020
 output:
   distill::distill_article:
@@ -14,12 +12,92 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center')
+```
 
-# Learn more about creating blogs with Distill at:
-# https://rstudio.github.io/distill/blog.html
+```{r package}
+if (!require("tidyverse")) remotes::install_github("joachim-gassen/tidycovid19")
+library(tidyverse)
+library(tidycovid19)
+library(zoo)
+library(DT)
+library(lubridate)
+library(ggplot2)
+library(plotly)
+```
 
+```{r panama}
+panama <- download_jhu_csse_covid19_data(cached = TRUE, silent = TRUE) %>%
+  filter(iso3c == "PAN",
+         confirmed > 0) %>%
+  mutate(month = month(date),
+         day = day(date)) %>%
+  select(date, month, day, confirmed, deaths, recovered) 
+```
+
+# Introduction
+
+The COVID-19 pandemic is considered as one of the greatest challenges that the humankind faced. The COVID-19 has fundamentally changed many things. With the measures the governments of many countries taken to contain the spread of COVID-19,the way people move within the country has been restricted. This blog is intended to show the pandemic in Panama how this pandemic impact on Panama's community mobility.
+
+# COVID-19 Cases in Panama
+
+The first case in Panama is confirmed on 9 March 2020. As of 2 September 2020, Panama reported 94,084 cases, 2,030 deaths, and 67,487 recoveries. You can select the "Date" and other columns from Table \@ref(tab:casetable) to see cases in particular time period.
+
+```{r casetable}
+panama %>%
+  DT::datatable(
+    caption = 'COVID-19 Cases in Panama',
+    colnames = c("Date", "Month","Day","Confirmed", "Deaths", "Recovered"),
+    extensions = 'Buttons', options = list(
+                  dom = 'Bfrtip',
+                  buttons = list(list(extend = 'colvis', columns = 1:6))),
+    filter = 'top')
+```
+Figure \@ref(fig:p1) shows the changes of COVID-19 cases in Panama more intuitively.The number of deaths and confirmed cases in Panama continues to increase, but the growth trend of the number of recovered people is very weak.
+
+```{r p1,fig.cap="the changes of COVID-19 cases in Panama"}
+p1 <- panama %>%
+  pivot_longer(c(confirmed,deaths,recovered), names_to = "type", values_to = "cases") %>%
+  ggplot(aes(x = date, y = cases, color = type)) +
+  geom_line() +
+  theme_light() +
+  theme(legend.title = element_blank())
+ggplotly(p1)
 ```
 
 
+```{r cmc}
+cmc <- download_google_cmr_data(cached = TRUE, silent = TRUE) %>%
+  filter(iso3c == "PAN") %>%
+  pivot_longer(retail_recreation:residential, names_to = "cm", values_to = "value") %>%
+  group_by(cm) %>%
+  summarise(mean = mean(value)) 
+cmc <- cmc%>%
+  mutate(cm = case_when(cm =="grocery_pharmacy" ~ "Grocery & pharmacy",
+                        cm =="parks" ~ "Parks",
+                        cm =="residential" ~ "Residential",
+                        cm =="retail_recreation" ~ "Retail & Recreation",
+                        cm =="transit_stations" ~ "Transit stations",
+                        cm =="workplaces" ~ "Workplaces")) %>%
+  arrange(mean)
+```
 
+# Community Mobility Changes
+
+Table \@ref(tab:cmtable) is about community mobility showing how visits and length of stay at different places change compared to a baseline. Retail and recreation places like restaurants, cafes, shopping centers, theme parks, museums, libraries, and movie theaters dropped most, followed by transit stations such as subway, bus, and train stations. The only positive value here is places of residence.
+
+The Panamanian government has introduced many measures to control the spread of the virus like canceling public events, school closing and stay at home requirements. These measures restrict people's community mobility.
+
+
+```{r cmtable}
+cmc %>%
+  DT::datatable(
+    caption = 'Community Mobility Changes',
+    colnames = c("Community Mobility", "Average Changes"),
+    filter = 'top')
+```
+# Data Resources
+
+*  Center for Systems Science and Engineering (CSSE) at Johns Hopkins University: https://github.com/CSSEGISandData/COVID-19
+
+* Google COVID-19 Community Mobility Reports: https://www.google.com/covid19/mobility/
