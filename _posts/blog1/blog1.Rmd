@@ -98,6 +98,6 @@ cmc %>%
 ```
 # Data Resources
 
-*  Center for Systems Science and Engineering (CSSE) at Johns Hopkins University: https://github.com/CSSEGISandData/COVID-19
+* Center for Systems Science and Engineering (CSSE) at Johns Hopkins University: https://github.com/CSSEGISandData/COVID-19
 
 * Google COVID-19 Community Mobility Reports: https://www.google.com/covid19/mobility/
