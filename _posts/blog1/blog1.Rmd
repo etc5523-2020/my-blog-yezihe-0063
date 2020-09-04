@@ -41,7 +41,7 @@ The COVID-19 pandemic is considered as one of the greatest challenges that the h
 
 # COVID-19 Cases in Panama
 
-The first case in Panama is confirmed on 9 March 2020. As of 2 September 2020, Panama reported 94,084 cases, 2,030 deaths, and 67,487 recoveries. You can select the "Date" and other columns from Table \@ref(tab:casetable) to see cases in particular time period.
+The first case in Panama is confirmed on 9 March 2020. As of 2 September 2020, Panama reported 94,084 cases, 2,030 deaths, and 67,487 recoveries. You can select the "Date" and other columns to see cases in particular time period.
 
 ```{r casetable}
 panama %>%
@@ -84,7 +84,7 @@ cmc <- cmc%>%
 
 # Community Mobility Changes
 
-Table \@ref(tab:cmtable) is about community mobility showing how visits and length of stay at different places change compared to a baseline. Retail and recreation places like restaurants, cafes, shopping centers, theme parks, museums, libraries, and movie theaters dropped most, followed by transit stations such as subway, bus, and train stations. The only positive value here is places of residence.
+This table is about community mobility showing how visits and length of stay at different places change compared to a baseline. Retail and recreation places like restaurants, cafes, shopping centers, theme parks, museums, libraries, and movie theaters dropped most, followed by transit stations such as subway, bus, and train stations. The only positive value here is places of residence.
 
 The Panamanian government has introduced many measures to control the spread of the virus like canceling public events, school closing and stay at home requirements. These measures restrict people's community mobility.
 
