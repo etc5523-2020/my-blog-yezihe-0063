@@ -1,0 +1,68 @@
+---
+title: "Blog 2: COVID-19 in Belarus"
+description: |
+  COVID-19 in Belarus.
+author:
+  - name: Yezi He
+    affiliation: Monash University
+date: 09-17-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.align = 'center')
+```
+
+```{r package}
+library(tidyverse)
+library(tidycovid19)
+library(ggplot2)
+library(gganimate)
+library(hrbrthemes)
+library(gifski)
+library(plotly)
+```
+
+```{r belarus}
+belarus1 <- download_jhu_csse_covid19_data(cached = TRUE, silent = TRUE) %>%
+  filter(country == "Belarus") %>%
+  filter(date > "2020-02-27")
+belarus2 <- read_csv(here::here("data/owid-covid-data.csv")) %>%
+  filter(location == "Belarus") %>%
+  filter(date > "2020-02-27")
+```
+
+# Introduction
+
+The COVID-19 pandemic is considered as one of the greatest challenges that the humankind faced. The COVID-19 has fundamentally changed many things. With the measures the governments of many countries taken to contain the spread of COVID-19,the way people move within the country has been restricted. 
+
+# COVID-19 pandemic in Belarus
+
+The first case in Belarus is confirmed on 28 February 2020. 
+
+#As of 2 September 2020, Panama reported 94,084 cases, 2,030 deaths, and 67,487 recoveries. You can select the "Date" and other columns to see cases in particular time period.
+
+Figure \@ref(fig:p1) shows the changes of COVID-19 cases in Belarus more intuitively.The number of confirmed cases in Belarus continues to increase, but the growth trend of the number of recovered people is also very high.
+
+```{r p1,fig.cap="The Covid-19 cases of confirmed, deaths and recovered in Belarus"}
+p1 <- belarus1 %>%
+  pivot_longer(c(confirmed,deaths,recovered), names_to = "type", values_to = "cases") %>%
+  ggplot(aes(x = date, y = cases, color = type)) +
+  geom_line() +
+  geom_point() +
+  theme_ipsum() +
+  theme(legend.title = element_blank()) +
+  ggtitle("The spread of Covid-19 in Belarus")
+  transition_reveal(date)
+animate(p1, renderer = gifski_renderer())
+anim_save(filename = "changes-belarus.gif")
+```
+
+
+
+# Data Resources
+
+* Center for Systems Science and Engineering (CSSE) at Johns Hopkins University: https://github.com/CSSEGISandData/COVID-19
+

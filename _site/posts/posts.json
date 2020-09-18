@@ -1,5 +1,21 @@
 [
   {
+    "path": "posts/blog2/",
+    "title": "Blog 2: COVID-19 in Belarus",
+    "description": "COVID-19 in Belarus.",
+    "author": [
+      {
+        "name": "Yezi He",
+        "url": {}
+      }
+    ],
+    "date": "2020-09-17",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2020-09-17T20:12:10+10:00",
+    "input_file": "blog2.utf8.md"
+  },
+  {
     "path": "posts/blog1/",
     "title": "Blog 1: COVID-19 in Panama",
     "description": "COVID-19 in Panama.",
