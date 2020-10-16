@@ -71,7 +71,7 @@ cmc <- download_google_cmr_data(cached = TRUE, silent = TRUE) %>%
   filter(iso3c == "PAN") %>%
   pivot_longer(retail_recreation:residential, names_to = "cm", values_to = "value") %>%
   group_by(cm) %>%
-  summarise(mean = mean(value)) 
+  summarise(mean = mean(value, na.rm = TRUE)) 
 cmc <- cmc%>%
   mutate(cm = case_when(cm =="grocery_pharmacy" ~ "Grocery & pharmacy",
                         cm =="parks" ~ "Parks",
@@ -94,7 +94,9 @@ cmc %>%
   DT::datatable(
     caption = 'Community Mobility Changes',
     colnames = c("Community Mobility", "Average Changes"),
-    filter = 'top')
+    filter = 'top',
+    options = list(columnDefs = list(list(className = 'dt-body-left', targets = 0:2)))
+    )
 ```
 # Data Resources
 

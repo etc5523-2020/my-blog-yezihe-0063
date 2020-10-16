@@ -1,5 +1,21 @@
 [
   {
+    "path": "posts/blog3/",
+    "title": "Self-Review On My Shiny App",
+    "description": "It is a post about self-reflection, including reviewing the Shiny App I made before and offering improvement points.",
+    "author": [
+      {
+        "name": "Yezi He",
+        "url": {}
+      }
+    ],
+    "date": "2020-10-15",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2020-10-16T19:03:39+11:00",
+    "input_file": "blog3.utf8.md"
+  },
+  {
     "path": "posts/blog2/",
     "title": "Blog 2: COVID-19 in Belarus",
     "description": "COVID-19 in Belarus.",
@@ -11,9 +27,9 @@
     ],
     "date": "2020-09-17",
     "categories": [],
-    "preview": {},
-    "last_modified": "2020-09-17T20:12:10+10:00",
-    "input_file": "blog2.utf8.md"
+    "preview": "posts/blog2/blog2_files/figure-html5/p2-1.png",
+    "last_modified": "2020-09-18T22:29:53+10:00",
+    "input_file": {}
   },
   {
     "path": "posts/blog1/",

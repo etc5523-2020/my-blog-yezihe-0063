@@ -9,6 +9,7 @@ date: 09-17-2020
 output:
   distill::distill_article:
     self_contained: false
+bibliography: references.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -20,49 +21,83 @@ library(tidyverse)
 library(tidycovid19)
 library(ggplot2)
 library(gganimate)
-library(hrbrthemes)
 library(gifski)
+library(scales)
 library(plotly)
 ```
 
 ```{r belarus}
-belarus1 <- download_jhu_csse_covid19_data(cached = TRUE, silent = TRUE) %>%
+belarus <- download_jhu_csse_covid19_data(cached = TRUE, silent = TRUE) %>%
   filter(country == "Belarus") %>%
-  filter(date > "2020-02-27")
-belarus2 <- read_csv(here::here("data/owid-covid-data.csv")) %>%
-  filter(location == "Belarus") %>%
   filter(date > "2020-02-27")
 ```
 
 # Introduction
 
-The COVID-19 pandemic is considered as one of the greatest challenges that the humankind faced. The COVID-19 has fundamentally changed many things. With the measures the governments of many countries taken to contain the spread of COVID-19,the way people move within the country has been restricted. 
+The COVID-19 pandemic is considered as one of the greatest challenges that the humankind faced. This blog aims to analysis the spread of COVID-19 in Belarus. This blog mainly used the package *tidycovid19* @tidycovid19 as data resources, including the data from *owidcoronavius* @owidcoronavirus and Center for Systems Science and Engineering (CSSE) @CSSE.
 
-# COVID-19 pandemic in Belarus
+# The spread of coronavirus in Belarus
 
-The first case in Belarus is confirmed on 28 February 2020. 
+It is reported that the first case of COVID-19 in Belarus was registered in Minsk on 28 February 2020 @kolodyazhnyy_2020. 
 
-#As of 2 September 2020, Panama reported 94,084 cases, 2,030 deaths, and 67,487 recoveries. You can select the "Date" and other columns to see cases in particular time period.
-
-Figure \@ref(fig:p1) shows the changes of COVID-19 cases in Belarus more intuitively.The number of confirmed cases in Belarus continues to increase, but the growth trend of the number of recovered people is also very high.
+Figure \@ref(fig:p1) shows that the number of confirmed cases in Belarus has increased rapidly since April, and the growth rate has slowed slightly in June. According to the report by TUT.BY @tut.by20201, the reason why there is a small number of confirmed cases before April is that the Health Ministry did not provide reliable information and data on the spread of COVID-19 in the country. But the good thing is that the number of recovered cases also increases at the same time and the number of death cases has remained below 1,000. 
 
 ```{r p1,fig.cap="The Covid-19 cases of confirmed, deaths and recovered in Belarus"}
-p1 <- belarus1 %>%
+p1 <- belarus %>%
   pivot_longer(c(confirmed,deaths,recovered), names_to = "type", values_to = "cases") %>%
   ggplot(aes(x = date, y = cases, color = type)) +
   geom_line() +
   geom_point() +
-  theme_ipsum() +
+  theme_light() +
+  xlab("Date") + ylab("Cases") +
   theme(legend.title = element_blank()) +
-  ggtitle("The spread of Covid-19 in Belarus")
-  transition_reveal(date)
+  ggtitle("The spread of Covid-19 in Belarus") +
+  transition_reveal(date) +
+  scale_x_date(date_breaks = "1 month", labels=date_format("%b"))
 animate(p1, renderer = gifski_renderer())
 anim_save(filename = "changes-belarus.gif")
+
+```
+
+# Testing to prevent the spread of the virus
+
+Testing is an important way to properly monitor and prevent the spread of the virus.
+
+```{r dates, fig.cap="The total tests in Belarus with colors of positive rate (%)"}
+belarus_test <- download_owid_testing_data(cached = TRUE, silent = TRUE) %>%
+  filter(iso3c == "BLR") %>%
+  merge(belarus, by.x = "date", by.y = "date") %>%
+  select(date, total_tests, confirmed) %>%
+  mutate(positive_rate = confirmed/total_tests*100)
+
+dates <- belarus_test %>%
+  filter(positive_rate > 7) %>%
+  summarise(from = min(date),
+            to = max(date))
+  
 ```
 
 
+```{r p2, fig.cap="The total tests in Belarus with colors of positive rate (%)"}
+p2 <- belarus_test  %>%
+  ggplot() +
+  geom_path(aes(x = date, y = total_tests, color = positive_rate),size = 1.5) +
+  geom_path(aes(x = date, y = confirmed, color = positive_rate), size = 1.5) +
+  scale_fill_gradient(low="green", high="red")+
+  theme_light() +
+  ggtitle("Total tests and confirmed cases in Belarus with positive rate") +
+  scale_x_date(date_breaks = "1 month", labels=date_format("%b")) +
+  xlab("Date") + ylab("Cases/Tests") + labs(color = "Positive Rate (%)") +
+  scale_color_gradient(low="green", high="red") +
+  geom_rect(data = dates, aes(xmin = from, xmax = to, ymin = -Inf, ymax = Inf), alpha = 0.1, fill = "red") +
+  annotate(geom = "text", x=as.Date('2020-09-01'), y=150000, label="Confirmed Cases", size = 3) +
+  annotate(geom = "text", x=as.Date('2020-09-01'), y=1400000, label="Total tests", size = 3) +
+  annotate(geom = "text", x=as.Date('2020-05-22'), y=1800000, label="Positive rate over 7%", size = 3)
+p2
 
-# Data Resources
+```
 
-* Center for Systems Science and Engineering (CSSE) at Johns Hopkins University: https://github.com/CSSEGISandData/COVID-19
+On 11 April, the leader of the WHO mission in Belarus, Patrick O'Connor noted the presence of the testing laboratories and improvements of the testing process @tut.by20202. Thus the total tests increased rapidly. 
+
+In Figure \@ref(fig:p2), the slope of the **Total Tests** line is very stable. The colors on the two lines represent the **Positive Rate**, and the red part represents the positive rate greater than 7%. This may be due to the delay in the statistics of the Belarusian government before May 11. After June 18, as the number of tests increases, the positive rate gradually decreases.
 
