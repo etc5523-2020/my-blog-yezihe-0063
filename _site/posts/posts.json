@@ -16,6 +16,22 @@
     "input_file": "blog3.utf8.md"
   },
   {
+    "path": "posts/blog4/",
+    "title": "Peer Review On AusCovid19 Package",
+    "description": "It is a post reviewing AusCovid19 package from Dilinie Seimon.",
+    "author": [
+      {
+        "name": "Yezi He",
+        "url": {}
+      }
+    ],
+    "date": "2020-10-15",
+    "categories": [],
+    "preview": {},
+    "last_modified": "2020-10-30T22:08:00+11:00",
+    "input_file": "blog4.utf8.md"
+  },
+  {
     "path": "posts/blog2/",
     "title": "Blog 2: COVID-19 in Belarus",
     "description": "COVID-19 in Belarus.",

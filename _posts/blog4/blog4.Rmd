@@ -1,0 +1,118 @@
+---
+title: "Peer Review On AusCovid19 Package"
+description: |
+  It is a post reviewing AusCovid19 package from Dilinie Seimon.
+author:
+  - name: Yezi He
+    affiliation: Monash University
+date: 10-15-2020
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE, fig.pos = 'H', fig.align = 'center')
+```
+
+```{r package}
+library(tidyverse)
+```
+
+# Overview
+
+This blog is aimed to review the R package **AusCovid19** from Dilinie Seimon.
+
+The aim of the AusCovid19 package is to visualise the spread of COVID-19 in Australia and compare the spread across states. The application visualizes the number of confirmed COVID-19 cases, recoveries and deaths reported due to COVID-19 in Australia at date, as well as the trend of spread across the states over time. Further, the dashboard also provides the daily case numbers reported in each state.
+
+The development version of the AusCovid19 package can be installed from [GitHub]("https://github.com/etc5523-2020/r-package-assessment-dilinie-seimon") with:
+
+```r
+install.packages("devtools")
+remotes::install_github("etc5523-2020/r-package-assessment-dilinie-seimon")
+library(AusCovid19)
+```
+
+There are several functions:
+
+- `launch_app()` launches a Shiny application visualizing the spread of COVID-19 across the states of Australia.
+
+```r
+launch_app()
+```
+
+- `download_data()` allows retreival of state level COVID-19 cases (confirmed, recoveries and deaths) in Australia, and can be either 'cumulative' or 'daily' case counts.
+
+```r
+#downloading daily COVID-19 data
+daily_df <- download_data("daily")
+```
+
+- `calculate_daily_counts()` takes the cumulative counts dataframe as an input and returns the respective daily counts dataframe.
+
+```r
+calculate_daily_counts(cum_df)
+```
+
+- `get_case_count()` returns the case count of a given type of cases (either confirmed, recoveries or deaths at a given date)
+
+```r
+#get cumulative confirmed case count on 2020-06-05
+get_case_count(cum_df, "2020-06-05", "Confirmed")
+```
+
+- `generate_value_box()` takes a numeric vector, text label, icon and color as input arguments and returns an html value-box widget of the specified color with the sum of the vector as the value, text label as the subtitle and the icon.
+
+```r
+generate_value_box(get_case_count(daily_df, "2020-06-05", "Confirmed"), 
+text="Confirmed Cases", icon="head-side-mask", color="aqua")
+```
+
+
+# What did I think this package would do? Did it do it?
+
+When I saw the name of this package and its instruction, I expected it to show me the number of confirmed cases, deaths, and recovered cases in Australia. There are not only cumulative numbers but also daily numbers. What's more, it’s best to have various types of plots, and I’m very looking forward to an interactive map. 
+
+The expectation for the package is that it would be install success and when using the function it would be smoothly. The most important thing is **no error**.
+
+Dilinie did a great job:
+
+- The package passes R CMD CHECK without errors or warnings.
+- Impressive dashboard with plotly and reactive plots.
+- All unit tests pass without error.
+- The functions give clear results
+
+# Improvements
+
+Dilinie's package has been done well enough, these suggestions are just for icing on the package.
+
+- Make the pkgdown site link available on the Github.
+- For the map in the shiny app, when the mouse is placed on it, not only the name of the state can be displayed, but also the value of the proportion can be displayed.
+- In the interface of selecting the date range, you can add a start date.
+- Some pictures can be added on the instruction page.
+- More tests for other functions.
+
+# What I have learned?
+
+I learned a lot in the Dilinie's package. The most obvious is the dashboards. Compared with Dilinie's shiny APP, mine structure is not clear enough, and the layout is not uniform. For the package, Dilinie and I both use the tidycovid19 package, which will increase the difficulty of passing the RMD check. I learned from Dilinie here how to add tidycovid19 to Remotes and Imports in the description file `github::joachim-gassen/tidycovid19`, `github::nset-ornl/wbstats`.
+
+# Appendix
+
+#### Documentation
+
+The package includes all the following forms of documentation:
+
+- <input type="checkbox" checked> </input> **Installation instructions:** for the development version of package and any non-standard dependencies in README
+- <input type="checkbox" checked> </input> **Vignette(s)** demonstrating major functionality that runs successfully locally
+- <input type="checkbox" checked> </input> **Function Documentation:** for all exported functions in R help
+- <input type="checkbox" checked> </input> **Examples** for all exported functions in R Help that run successfully locally
+- <input type="checkbox" checked> </input> **Community guidelines** including contribution guidelines in the README or CONTRIBUTING, and DESCRIPTION with `URL`, `BugReports` and `Maintainer` (which may be autogenerated via `Authors@R`).
+
+
+#### Functionality
+
+- <input type="checkbox" checked> </input> **Installation:** Installation succeeds as documented.
+- <input type="checkbox" checked> </input> **Functionality:** Any functional claims of the software been confirmed.
+- <input type="checkbox" checked> </input> **Performance:** Any performance claims of the software been confirmed.
+- <input type="checkbox" checked> </input> **Automated tests:** Unit tests cover essential functions of the package
+   and a reasonable range of inputs and conditions. All tests pass on the local machine.
